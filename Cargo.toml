@@ -21,7 +21,7 @@ serde_json = "1"
 serde_yaml = "0.9"
 serde-pickle = "1.0"
 serde-transcode = "1"
-toml = "*"
+toml = "0.5"
 
 # TODO: a proper CLI
 # clap = "3"
