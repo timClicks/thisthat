@@ -7,7 +7,7 @@ edition = "2021"
 license = "BlueOak-1.0.0"
 license-file = "LICENSE.md"
 categories = ["command-line-utilities"]
-
+repository = "https://github.com/timClicks/thisthat/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
