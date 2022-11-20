@@ -89,7 +89,8 @@ macro_rules! transcode {
             Format::UrlEncoded => {
                 use form_urlencoded::Serializer as UrlEncoder;
                 let mut data = String::new();
-                let serializer = serde_urlencoded::Serializer::new(&mut UrlEncoder::new(&mut data));
+                let mut encoder = UrlEncoder::new(&mut data);
+                let serializer = serde_urlencoded::Serializer::new(&mut encoder);
                 serde_transcode::transcode($deserializer, serializer)?;
                 $destination.write_all(data.as_bytes())?;
             }
