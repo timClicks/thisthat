@@ -32,6 +32,7 @@ toml = "0.5"
  # TODO: these crates doesn't expose Serializer as easily as they could
 # bson = "2"
 # postcard =  { version = "1", features = ["alloc"] }
+# quick-xml = "0.27" # needs CLI
 
 [[bin]]
 name = "tt"
