@@ -7,6 +7,7 @@ Data format conversion utility.
 **thisthat** provides a command-line tool `tt` for converting between data formats.
 It can to and from convert between these formats:
 
+- CBOR
 - JSON
 - MsgPack
 - YAML

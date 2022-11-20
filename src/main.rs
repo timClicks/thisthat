@@ -13,6 +13,7 @@ enum Source {
 
 #[derive(Debug, PartialEq, Eq)]
 enum Format {
+    Cbor,
     Json { pretty: bool },
     MsgPack,
     Toml { pretty: bool },
@@ -26,6 +27,7 @@ impl FromStr for Format {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let fmt = match s {
+            "cbor" | "CBOR" => Format::Cbor,
             "json" | "JSON" => Format::Json { pretty: true },
             "yaml" | "YAML" => Format::Yaml,
             "toml" | "TOML "=> Format::Toml { pretty: true },
@@ -56,6 +58,12 @@ struct Args {
 macro_rules! transcode {
     ($output_format:expr, $destination:expr, $deserializer:expr) => {
         match $output_format {
+            Format::Cbor => {
+                let mut dest = serde_cbor::ser::IoWrite::new(&mut $destination);
+                let mut serializer = serde_cbor::Serializer::new(&mut dest)
+                    .packed_format();
+                serde_transcode::transcode($deserializer, &mut serializer)?;
+            }
             Format::Json { pretty: true } => {
                 let mut serializer = serde_json::Serializer::pretty($destination);
                 serde_transcode::transcode($deserializer, &mut serializer)?;
@@ -105,8 +113,8 @@ Usage:
   tt -h             Prints help
 
 tt reads from stdin and writes to stdout. Supported
-formats for THIS and THAT are: json, msgpack, pickle
-ron, toml and yaml.
+formats for THIS and THAT are: cbor, json, msgpack,
+pickle, ron, toml and yaml.
 ");
     std::process::exit(1)
 }
@@ -153,6 +161,13 @@ fn main() -> Result<(), Error> {
     // Yes, repetition here is horrific, but `serde::Deerializer` and
     // `serde::Serializer` cannot be made trait objects .. patch welcome
     match args.input {
+        Format::Cbor => {
+            let reader = serde_cbor::de::IoRead::new(source);
+
+            let mut deserializer = serde_cbor::Deserializer::new(reader);
+
+            transcode!(args.output, destination, &mut deserializer)
+        }
         Format::Json { pretty: _ } => {
             let mut deserializer = serde_json::Deserializer::from_reader(source);
 
