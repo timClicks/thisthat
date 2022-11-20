@@ -169,7 +169,7 @@ fn main() -> Result<(), Error> {
     };
 
 
-    // Yes, repetition here is horrific, but `serde::Deerializer` and
+    // Yes, repetition here is horrific, but `serde::Deserializer` and
     // `serde::Serializer` cannot be made trait objects .. patch welcome
     match args.input {
         Format::Cbor => {
