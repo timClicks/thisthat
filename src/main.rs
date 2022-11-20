@@ -123,7 +123,8 @@ Usage:
 
 tt reads from stdin and writes to stdout. Supported
 formats for THIS and THAT are: cbor, json, msgpack,
-pickle, ron, toml and yaml.
+pickle, ron, toml, url (for x-www-form-urlencoded),
+and yaml.
 ");
     std::process::exit(1)
 }
