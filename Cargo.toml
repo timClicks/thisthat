@@ -2,7 +2,7 @@
 name = "thisthat"
 authors = ["Tim McNamara <tim@mcnamara.nz>"]
 description = "Data conversion utility"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 license = "BlueOak-1.0.0"
 license-file = "LICENSE.md"
