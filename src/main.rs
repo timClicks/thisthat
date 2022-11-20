@@ -20,6 +20,7 @@ enum Format {
     Yaml,
     Pickle,
     Ron,
+    UrlEncoded,
 }
 
 impl FromStr for Format {
@@ -34,6 +35,7 @@ impl FromStr for Format {
             "msgpack" | "MSGPACK" => Format::MsgPack,
             "pickle"  | "PICKLE" => Format::Pickle,
             "ron" | "RON" => Format::Ron,
+            "url" | "www-form" => Format::UrlEncoded,
             _ => anyhow::bail!("unsupported format ({})." , s),
         };
         Ok(fmt)
@@ -83,6 +85,13 @@ macro_rules! transcode {
             Format::Ron => {
                 let mut serializer = ron::Serializer::new($destination, None)?;
                 serde_transcode::transcode($deserializer, &mut serializer)?;
+            }
+            Format::UrlEncoded => {
+                use form_urlencoded::Serializer as UrlEncoder;
+                let mut data = String::new();
+                let serializer = serde_urlencoded::Serializer::new(&mut UrlEncoder::new(&mut data););
+                serde_transcode::transcode($deserializer, serializer)?;
+                $destination.write_all(data.as_bytes())?;
             }
             Format::Toml { pretty: true } => {
                 let mut data = String::new();
@@ -183,6 +192,15 @@ fn main() -> Result<(), Error> {
 
             transcode!(args.output, destination, &mut deserializer)
         },
+        Format::UrlEncoded => {
+            let mut data = Vec::<u8>::with_capacity(0x100);
+            let _bytes_read = source.read_to_end(&mut data)?;
+
+            let parser = form_urlencoded::parse(&data);
+            let deserializer = serde_urlencoded::Deserializer::new(parser);
+
+            transcode!(args.output, destination, deserializer)
+        }
         Format::Toml { pretty: _ } => {
             let mut data = String::with_capacity(0x100);
             let _bytes_read = source.read_to_string(&mut data)?;

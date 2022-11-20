@@ -14,6 +14,7 @@ It can to and from convert between these formats:
 - Pickle
 - RON
 - TOML
+- x-www-form-urlencoded ("url" or "www-form")
 
 ## Usage
 
