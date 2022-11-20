@@ -89,7 +89,7 @@ macro_rules! transcode {
             Format::UrlEncoded => {
                 use form_urlencoded::Serializer as UrlEncoder;
                 let mut data = String::new();
-                let serializer = serde_urlencoded::Serializer::new(&mut UrlEncoder::new(&mut data););
+                let serializer = serde_urlencoded::Serializer::new(&mut UrlEncoder::new(&mut data));
                 serde_transcode::transcode($deserializer, serializer)?;
                 $destination.write_all(data.as_bytes())?;
             }
@@ -219,7 +219,10 @@ fn main() -> Result<(), Error> {
             transcode!(args.output, destination, &mut deserializer)
 
         },
-        Format::Pickle => todo!(),
+        Format::Pickle => {
+            let mut deserializer = serde_pickle::Deserializer::new(source, serde_pickle::de::DeOptions::new());
+            transcode!(args.output, destination, &mut deserializer)
+        },
     }
 
     Ok(())
