@@ -1,8 +1,7 @@
 use std::vec;
 
-use serde::{self, Serialize, Deserialize};
+use serde::{self, Deserialize, Serialize};
 use serde_json;
-
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Fixture {
@@ -15,26 +14,20 @@ struct Fixture {
 
 impl Fixture {
     fn new() -> Self {
-        let garbage: Vec<String> = vec![
-            "a".to_string(),
-            "b".to_string(),
-            "c".to_string(),
-            "".to_string(),
-            "e".to_string(),
-        ];
+        let garbage: Vec<&'static str> = vec!["a", "b", "c", "", "e"];
 
         Fixture {
             a: "hello there".to_string(),
             b: -10.0,
             c: 12312,
-            d: garbage.clone(),
+            d: garbage.iter().map(|x| x.to_string()).collect(),
             e: Some(Box::new(Fixture {
                 a: "hello there".to_string(),
                 b: -10.0,
                 c: 12312,
-                d: garbage.clone(),
+                d: garbage.iter().map(|x| x.to_string()).collect(),
                 e: None,
-            }))
+            })),
         }
     }
 }
